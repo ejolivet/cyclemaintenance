@@ -1,0 +1,10 @@
+-c requirements.txt
+tox
+pylint
+pylint_django
+flake8
+pytest
+pytest-cov
+black
+black[d]
+mypy
