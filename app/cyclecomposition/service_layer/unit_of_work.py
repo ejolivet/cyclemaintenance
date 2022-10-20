@@ -1,8 +1,7 @@
 import abc
-from typing import TypeVar, Any
+from typing import Any, TypeVar
 
 from ..adapters import repository
-
 
 T = TypeVar("T", bound="AbstractUnitOfWork")
 
