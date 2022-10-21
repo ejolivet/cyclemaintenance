@@ -1,5 +1,5 @@
-from typing import Set, TypeVar
 import abc
+from typing import Set, TypeVar
 
 from ..domain.model import Cycle
 

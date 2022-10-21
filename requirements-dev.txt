@@ -49,7 +49,9 @@ idna==3.4
 iniconfig==1.1.1
     # via pytest
 isort==5.10.1
-    # via pylint
+    # via
+    #   -r requirements-dev.in
+    #   pylint
 lazy-object-proxy==1.7.1
     # via astroid
 mccabe==0.7.0
