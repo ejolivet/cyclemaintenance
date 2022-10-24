@@ -1,14 +1,16 @@
 from typing import Any, TypeVar
 
-from cyclecomposition.adapters.repositoydjango import DjangoRepository
-from cyclecomposition.service_layer.unit_of_work import AbstractUnitOfWork
 from django.db import transaction
+
+from ..adapters.repositoydjango import DjangoRepository
+from ..service_layer.unit_of_work import AbstractUnitOfWork
 
 T = TypeVar("T", bound="DjangoUnitOfWork")
 
 
 class DjangoUnitOfWork(AbstractUnitOfWork):
     def __init__(self: T) -> None:
+        super().__init__()
         self.cycles: DjangoRepository = DjangoRepository()
 
     def __enter__(self: T) -> T:
