@@ -1,5 +1,6 @@
-from cyclecomposition.domain import model as domain_model
 from django.db import models
+
+from cyclecomposition.domain import model as domain_model
 
 
 class Cycle(models.Model):

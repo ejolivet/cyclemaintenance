@@ -3,14 +3,17 @@ from typing import Any, TypeVar
 from django.db import transaction
 
 from ..adapters.repositoydjango import DjangoRepository
-from .unit_of_work import AbstractUnitOfWork
+from ..service_layer.unit_of_work import AbstractUnitOfWork
 
 T = TypeVar("T", bound="DjangoUnitOfWork")
 
 
 class DjangoUnitOfWork(AbstractUnitOfWork):
-    def __enter__(self: T) -> T:
+    def __init__(self: T) -> None:
+        super().__init__()
         self.cycles: DjangoRepository = DjangoRepository()
+
+    def __enter__(self: T) -> T:
         transaction.set_autocommit(False)
         return super().__enter__()
 

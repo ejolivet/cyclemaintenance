@@ -3,9 +3,10 @@ import os
 from typing import Any
 
 import django
-from cyclecomposition.service_layer import services, unit_of_work_django
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+
+from cyclecomposition.service_layer import services, unit_of_work_django
 
 os.environ["DJANGO_SETTINGS_MODULE"] = "djangoproject.django_project.settings"
 django.setup()

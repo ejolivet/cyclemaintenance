@@ -5,6 +5,7 @@ pylint_django
 flake8
 pytest
 pytest-cov
+pytest-django
 black
 black[d]
 mypy

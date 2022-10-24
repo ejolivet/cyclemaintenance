@@ -13,8 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from djangoproject.cyclecomp import views
+
 from django.urls import path
-from djangoproject.cyclecomposition import views
 
 urlpatterns = [
     path("add_cycle", views.add_cycle),

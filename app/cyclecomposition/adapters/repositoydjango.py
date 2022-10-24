@@ -1,4 +1,4 @@
-from djangoproject.cyclecomposition import models as django_models
+from djangoproject.cyclecomp import models as django_models
 
 from ..adapters.repository import AbstractRepository
 from ..domain.model import Cycle

@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name="cyclemaintenance",
+    name="cyclecomposition",
     version="0.1",
     packages=["cyclecomposition", "djangoproject"],
 )
