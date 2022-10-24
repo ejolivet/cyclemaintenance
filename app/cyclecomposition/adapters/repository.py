@@ -1,7 +1,7 @@
 import abc
 from typing import Set, TypeVar
 
-from ..domain.model import Cycle
+from cyclecomposition.domain.model import Cycle
 
 T = TypeVar("T", bound="AbstractRepository")
 

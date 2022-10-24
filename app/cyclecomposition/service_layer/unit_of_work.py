@@ -1,7 +1,7 @@
 import abc
 from typing import Any, TypeVar
 
-from ..adapters import repository
+from cyclecomposition.adapters import repository
 
 T = TypeVar("T", bound="AbstractUnitOfWork")
 

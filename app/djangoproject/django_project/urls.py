@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from djangoproject.cyclecomposition import views
+from djangoproject.cyclecomp import views
 
 urlpatterns = [
     path("add_cycle", views.add_cycle),

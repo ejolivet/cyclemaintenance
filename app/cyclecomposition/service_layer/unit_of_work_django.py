@@ -1,16 +1,17 @@
 from typing import Any, TypeVar
 
+from cyclecomposition.adapters.repositoydjango import DjangoRepository
+from cyclecomposition.service_layer.unit_of_work import AbstractUnitOfWork
 from django.db import transaction
-
-from ..adapters.repositoydjango import DjangoRepository
-from .unit_of_work import AbstractUnitOfWork
 
 T = TypeVar("T", bound="DjangoUnitOfWork")
 
 
 class DjangoUnitOfWork(AbstractUnitOfWork):
-    def __enter__(self: T) -> T:
+    def __init__(self: T) -> None:
         self.cycles: DjangoRepository = DjangoRepository()
+
+    def __enter__(self: T) -> T:
         transaction.set_autocommit(False)
         return super().__enter__()
 

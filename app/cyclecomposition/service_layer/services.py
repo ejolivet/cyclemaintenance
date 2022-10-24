@@ -1,5 +1,5 @@
-from ..domain.model import Cycle
-from ..service_layer import unit_of_work
+from cyclecomposition.domain.model import Cycle
+from cyclecomposition.service_layer import unit_of_work
 
 
 def add_cycle(

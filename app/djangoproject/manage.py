@@ -3,6 +3,10 @@
 import os
 import sys
 
+sys.path.extend(
+    ["C:\\Users\\erwan\\Documents\\_DevPython\\cyclemaintenance\\app\\cyclecomposition"]
+)
+
 
 def main() -> None:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_project.settings")
