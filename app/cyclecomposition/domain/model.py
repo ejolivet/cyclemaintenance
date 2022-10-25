@@ -1,6 +1,14 @@
+from dataclasses import dataclass
+
+
+@dataclass
+class RefName:
+    value: str
+
+
 class Cycle:
-    def __init__(self, ref: str):
-        self.reference: str = ref
+    def __init__(self, ref: RefName):
+        self.reference: RefName = ref
 
     def __repr__(self) -> str:
         return f"<Cycle {self.reference}>"
@@ -11,4 +19,4 @@ class Cycle:
         return other.reference == self.reference
 
     def __hash__(self) -> int:
-        return hash(self.reference)
+        return hash(self.reference.value)

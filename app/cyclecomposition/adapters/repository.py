@@ -1,7 +1,7 @@
 import abc
 from typing import Set, TypeVar
 
-from ..domain.model import Cycle
+from ..domain.model import Cycle, RefName
 
 T = TypeVar("T", bound="AbstractRepository")
 
@@ -13,7 +13,7 @@ class AbstractRepository(abc.ABC):
     def add(self: T, cycle: Cycle) -> None:
         self.seen.add(cycle)
 
-    def get(self: T, reference: str) -> Cycle:
+    def get(self: T, reference: RefName) -> Cycle:
         cycle: Cycle = self._get(reference)
         if cycle:
             self.seen.add(cycle)
@@ -24,5 +24,5 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get(self: T, reference: str) -> Cycle:
+    def _get(self: T, reference: RefName) -> Cycle:
         raise NotImplementedError
