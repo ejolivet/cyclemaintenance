@@ -1,0 +1,15 @@
+version: "3"
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - API_HOST=app
+      - PYTHONDONTWRITEBYTECODE=1
+    volumes:
+      - ./app:/app
+      - ./tests:/tests
+    ports:
+      - "5005:80"
