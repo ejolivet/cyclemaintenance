@@ -10,3 +10,4 @@ black
 black[d]
 mypy
 isort
+types-requests
