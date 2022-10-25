@@ -13,6 +13,7 @@ RUN pip install -e /app
 COPY tests/ /tests/
 COPY db.sqlite3 /db.sqlite3
 
+WORKDIR /app
 ENV DJANGO_SETTINGS_MODULE=djangoproject.django_project.settings
 CMD python /app/djangoproject/manage.py migrate && \
     python /app/djangoproject/manage.py runserver 0.0.0.0:80
