@@ -2,13 +2,13 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class RefName:
+class RefValue:
     value: str
 
 
 class Cycle:
-    def __init__(self, ref: RefName):
-        self.reference: RefName = ref
+    def __init__(self, ref: RefValue):
+        self.reference: RefValue = ref
 
     def __repr__(self) -> str:
         return f"<Cycle {self.reference}>"

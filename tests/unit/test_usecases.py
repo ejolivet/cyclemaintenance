@@ -1,6 +1,6 @@
 from typing import TypeVar
 
-from cyclecomposition.domain.model import Cycle, RefName
+from cyclecomposition.domain.model import Cycle, RefValue
 from cyclecomposition.adapters import repository
 from cyclecomposition.service_layer import services, unit_of_work
 
@@ -20,7 +20,7 @@ class FakeRepository(repository.AbstractRepository):
         self._cycles.add(cycle)
         super().add(cycle)
 
-    def _get(self, reference: RefName) -> Cycle:
+    def _get(self, reference: RefValue) -> Cycle:
         return next(b for b in self._cycles if b.reference == reference)
 
     def list(self) -> list[Cycle]:
@@ -49,7 +49,7 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
 def test_create_new_cycle() -> None:
     """test create a new cycle"""
     uow = FakeUnitOfWork()
-    ref = RefName("my_new_cycle")
-    services.add_cycle(ref, uow)
+    ref = RefValue("my_new_cycle")
+    services.create_cycle(ref, uow)
     assert uow.cycles.get(ref) is not None
     assert uow.committed

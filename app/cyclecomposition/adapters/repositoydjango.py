@@ -1,7 +1,7 @@
 from djangoproject.cyclecomp import models as django_models
 
 from ..adapters.repository import AbstractRepository
-from ..domain.model import Cycle, RefName
+from ..domain.model import Cycle, RefValue
 
 
 class DjangoRepository(AbstractRepository):
@@ -12,7 +12,7 @@ class DjangoRepository(AbstractRepository):
     def update(self, cycle: Cycle) -> None:
         django_models.Cycle.update_from_domain(cycle)
 
-    def _get(self, reference: RefName) -> Cycle:
+    def _get(self, reference: RefValue) -> Cycle:
         return (
             django_models.Cycle.objects.filter(reference=reference.value)
             .first()

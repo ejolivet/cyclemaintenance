@@ -16,5 +16,5 @@ class Cycle(models.Model):
 
     # noinspection PyTypeChecker
     def to_domain(self) -> domain_model.Cycle:
-        cycle_domain = domain_model.Cycle(ref=domain_model.RefName(self.reference))
+        cycle_domain = domain_model.Cycle(ref=domain_model.RefValue(self.reference))
         return cycle_domain

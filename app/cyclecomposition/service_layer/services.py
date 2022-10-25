@@ -1,9 +1,9 @@
-from ..domain.model import Cycle, RefName
+from ..domain.model import Cycle, RefValue
 from ..service_layer import unit_of_work
 
 
-def add_cycle(
-    ref: RefName,
+def create_cycle(
+    ref: RefValue,
     uow: unit_of_work.AbstractUnitOfWork,
 ) -> None:
     with uow:
