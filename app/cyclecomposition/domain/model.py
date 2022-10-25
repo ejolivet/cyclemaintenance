@@ -19,4 +19,4 @@ class Cycle:
         return other.reference == self.reference
 
     def __hash__(self) -> int:
-        return hash(self.reference.value)
+        return hash(self.reference)
