@@ -1,23 +1,23 @@
 from djangoproject.cyclecomp import models as django_models
 
 from ..adapters.repository import AbstractRepository
-from ..domain.model import Cycle, RefValue
+from ..domain.model import Component, ComponentReferenceValue
 
 
 class DjangoRepository(AbstractRepository):
-    def add(self, cycle: Cycle) -> None:
-        super().add(cycle)
-        self.update(cycle)
+    def add(self, component: Component) -> None:
+        super().add(component)
+        self.update(component)
 
-    def update(self, cycle: Cycle) -> None:
-        django_models.Cycle.update_from_domain(cycle)
+    def update(self, component: Component) -> None:
+        django_models.Component.update_from_domain(component)
 
-    def _get(self, reference: RefValue) -> Cycle:
+    def _get(self, reference: ComponentReferenceValue) -> Component:
         return (
-            django_models.Cycle.objects.filter(reference=reference.value)
+            django_models.Component.objects.filter(reference=reference.name)
             .first()
             .to_domain()
         )
 
-    def list(self) -> list[Cycle]:
-        return [b.to_domain() for b in django_models.Cycle.objects.all()]
+    def list(self) -> list[Component]:
+        return [b.to_domain() for b in django_models.Component.objects.all()]

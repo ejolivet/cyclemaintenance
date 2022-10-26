@@ -1,6 +1,6 @@
 from typing import TypeVar
 
-from cyclecomposition.domain.model import Cycle, RefValue
+from cyclecomposition.domain.model import Component, ComponentReferenceValue
 from cyclecomposition.adapters import repository
 from cyclecomposition.service_layer import services, unit_of_work
 
@@ -10,24 +10,22 @@ T = TypeVar("T", bound=repository.AbstractRepository)
 class FakeRepository(repository.AbstractRepository):
     """FakeRepository for test"""
 
-    def __init__(self, cycles: list[Cycle]) -> None:
+    def __init__(self, components: list[Component]) -> None:
         super().__init__()
-        self._cycles = set(cycles)
-        super().__init__()
+        self._components = set(components)
 
-    def add(self, cycle: Cycle) -> None:
-        super().add(cycle)
-        self._cycles.add(cycle)
-        super().add(cycle)
+    def add(self, component: Component) -> None:
+        super().add(component)
+        self._components.add(component)
 
-    def _get(self, reference: RefValue) -> Cycle:
-        return next(b for b in self._cycles if b.reference == reference)
+    def _get(self, reference: ComponentReferenceValue) -> Component:
+        return next(b for b in self._components if b.reference == reference)
 
-    def list(self) -> list[Cycle]:
+    def list(self) -> list[Component]:
         """getlist of all cycles"""
-        return list(self._cycles)
+        return list(self._components)
 
-    def update(self: T, cycle: Cycle) -> None:
+    def update(self: T, component: Component) -> None:
         raise NotImplementedError
 
 
@@ -36,7 +34,7 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
 
     def __init__(self) -> None:
         super().__init__()
-        self.cycles = FakeRepository([])
+        self.components = FakeRepository([])
         self.committed = False
 
     def commit(self) -> None:
@@ -49,7 +47,7 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
 def test_create_new_cycle() -> None:
     """test create a new cycle"""
     uow = FakeUnitOfWork()
-    ref = RefValue("my_new_cycle")
-    services.create_cycle(ref, uow)
-    assert uow.cycles.get(ref) is not None
+    ref = ComponentReferenceValue("my_new_cycle")
+    services.define_component(ref, uow)
+    assert uow.components.get(ref) is not None
     assert uow.committed
