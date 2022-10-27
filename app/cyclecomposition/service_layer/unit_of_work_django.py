@@ -11,7 +11,7 @@ T = TypeVar("T", bound="DjangoUnitOfWork")
 class DjangoUnitOfWork(AbstractUnitOfWork):
     def __init__(self: T) -> None:
         super().__init__()
-        self.cycles: DjangoRepository = DjangoRepository()
+        self.components: DjangoRepository = DjangoRepository()
 
     def __enter__(self: T) -> T:
         transaction.set_autocommit(False)
@@ -22,8 +22,8 @@ class DjangoUnitOfWork(AbstractUnitOfWork):
         transaction.set_autocommit(True)
 
     def commit(self: T) -> None:
-        for cycle in self.cycles.seen:
-            self.cycles.update(cycle)
+        for component in self.components.seen:
+            self.components.update(component)
         transaction.commit()
 
     def rollback(self: T) -> None:

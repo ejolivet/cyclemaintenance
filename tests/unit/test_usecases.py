@@ -1,6 +1,11 @@
 from typing import TypeVar
 
-from cyclecomposition.domain.model import Cycle
+from cyclecomposition.domain.commands import CreateComponent, Assembly
+from cyclecomposition.domain.model import (
+    ComponentId,
+    Component,
+    ComponentReference,
+)
 from cyclecomposition.adapters import repository
 from cyclecomposition.service_layer import services, unit_of_work
 
@@ -10,24 +15,22 @@ T = TypeVar("T", bound=repository.AbstractRepository)
 class FakeRepository(repository.AbstractRepository):
     """FakeRepository for test"""
 
-    def __init__(self, cycles: list[Cycle]) -> None:
+    def __init__(self, components: list[Component]) -> None:
         super().__init__()
-        self._cycles = set(cycles)
-        super().__init__()
+        self._components = set(components)
 
-    def add(self, cycle: Cycle) -> None:
-        super().add(cycle)
-        self._cycles.add(cycle)
-        super().add(cycle)
+    def add(self, component: Component) -> None:
+        super().add(component)
+        self._components.add(component)
 
-    def _get(self, reference: str) -> Cycle:
-        return next(b for b in self._cycles if b.reference == reference)
+    def _get(self, component_id: ComponentId) -> Component:
+        return next(b for b in self._components if b.component_id == component_id)
 
-    def list(self) -> list[Cycle]:
+    def list(self) -> list[Component]:
         """getlist of all cycles"""
-        return list(self._cycles)
+        return list(self._components)
 
-    def update(self: T, cycle: Cycle) -> None:
+    def update(self: T, component: Component) -> None:
         raise NotImplementedError
 
 
@@ -36,7 +39,7 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
 
     def __init__(self) -> None:
         super().__init__()
-        self.cycles = FakeRepository([])
+        self.components = FakeRepository([])
         self.committed = False
 
     def commit(self) -> None:
@@ -46,9 +49,29 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
         pass
 
 
-def test_create_new_cycle() -> None:
-    """test create a new cycle"""
+def test_create_new_component() -> None:
+    """test create a new component"""
     uow = FakeUnitOfWork()
-    services.add_cycle("my_new_cycle", uow)
-    assert uow.cycles.get("my_new_cycle") is not None
+    ref = ComponentReference("my_new_cycle", "marque_cycle")
+    component_id = uow.components.get_next_id()
+    command = CreateComponent(component_id=component_id, ref=ref)
+    services.define_component(command, uow)
+    assert uow.components.get(component_id) is not None
     assert uow.committed
+
+
+def test_component_mount_on() -> None:
+    uow = FakeUnitOfWork()
+    ref_component_1 = ComponentReference("comp_1", "marque_1")
+    ref_component_2 = ComponentReference("comp_2", "marque_2")
+    id_1 = uow.components.get_next_id()
+    command = CreateComponent(component_id=id_1, ref=ref_component_1)
+    services.define_component(command, uow)
+    id_2 = uow.components.get_next_id()
+    command = CreateComponent(component_id=id_2, ref=ref_component_2)
+    services.define_component(command, uow)
+
+    command_assembly = Assembly(component_id=id_1, mout_on_id=id_2)
+    services.mount_component_on(command_assembly, uow)
+
+    assert uow.components.get(id_1).parent_id == id_2

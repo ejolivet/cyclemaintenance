@@ -1,20 +1,36 @@
 from django.db import models
 
 from cyclecomposition.domain import model as domain_model
+from cyclecomposition.domain.model import ComponentId
 
 
-class Cycle(models.Model):
+class Component(models.Model):
+    component_id = models.CharField(max_length=16, primary_key=True)
     reference = models.CharField(max_length=255)
+    marque = models.CharField(max_length=255)
+    parent = models.CharField(max_length=16, null=True)
 
     @staticmethod
-    def update_from_domain(cycle_domain: domain_model.Cycle) -> None:
+    def update_from_domain(component_domain: domain_model.Component) -> None:
         try:
-            cycle = Cycle.objects.get(reference=cycle_domain.reference)
-        except Cycle.DoesNotExist:
-            cycle = Cycle(reference=cycle_domain.reference)
-        cycle.save()
+            component = Component.objects.get(
+                component_id=component_domain.component_id.identifier
+            )
+        except Component.DoesNotExist:
+            component = Component(
+                component_id=component_domain.component_id.identifier,
+                reference=component_domain.reference.reference,
+                marque=component_domain.reference.marque,
+            )
+        if component_domain.parent_id:
+            component.parent = component_domain.parent_id.identifier
+        component.save()
 
     # noinspection PyTypeChecker
-    def to_domain(self) -> domain_model.Cycle:
-        cycle_domain = domain_model.Cycle(ref=self.reference)
-        return cycle_domain
+    def to_domain(self) -> domain_model.Component:
+        component_domain = domain_model.Component(
+            component_id=domain_model.ComponentId.from_string(self.component_id),
+            ref=domain_model.ComponentReference(self.reference, self.marque),
+        )
+        component_domain.set_parent(ComponentId.from_string(self.parent))
+        return component_domain

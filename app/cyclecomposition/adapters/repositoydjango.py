@@ -1,21 +1,23 @@
 from djangoproject.cyclecomp import models as django_models
 
 from ..adapters.repository import AbstractRepository
-from ..domain.model import Cycle
+from ..domain.model import Component, ComponentId
 
 
 class DjangoRepository(AbstractRepository):
-    def add(self, cycle: Cycle) -> None:
-        super().add(cycle)
-        self.update(cycle)
+    def add(self, component: Component) -> None:
+        super().add(component)
+        self.update(component)
 
-    def update(self, cycle: Cycle) -> None:
-        django_models.Cycle.update_from_domain(cycle)
+    def update(self, component: Component) -> None:
+        django_models.Component.update_from_domain(component)
 
-    def _get(self, reference: str) -> Cycle:
+    def _get(self, component_id: ComponentId) -> Component:
         return (
-            django_models.Cycle.objects.filter(reference=reference).first().to_domain()
+            django_models.Component.objects.filter(component_id=component_id.identifier)
+            .first()
+            .to_domain()
         )
 
-    def list(self) -> list[Cycle]:
-        return [b.to_domain() for b in django_models.Cycle.objects.all()]
+    def list(self) -> list[Component]:
+        return [b.to_domain() for b in django_models.Component.objects.all()]

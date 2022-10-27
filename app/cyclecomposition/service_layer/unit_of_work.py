@@ -7,7 +7,7 @@ T = TypeVar("T", bound="AbstractUnitOfWork")
 
 
 class AbstractUnitOfWork(abc.ABC):
-    cycles: repository.AbstractRepository
+    components: repository.AbstractRepository
 
     def __init__(self: T) -> None:
         pass
