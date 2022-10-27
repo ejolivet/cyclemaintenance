@@ -1,7 +1,8 @@
 import abc
 from typing import Set, TypeVar
 
-from ..domain.model import Component, ComponentReferenceValue
+from ..domain.model import ComponentId, Component, ComponentReferenceValue
+import uuid
 
 T = TypeVar("T", bound="AbstractRepository")
 
@@ -13,8 +14,13 @@ class AbstractRepository(abc.ABC):
     def add(self: T, component: Component) -> None:
         self.seen.add(component)
 
-    def get(self: T, reference: ComponentReferenceValue) -> Component:
-        component: Component = self._get(reference)
+    @staticmethod
+    def get_next_id() -> ComponentId:
+        component_id: ComponentId = ComponentId.from_string(str(uuid.uuid4()))
+        return component_id
+
+    def get(self: T, component_id: ComponentId) -> Component:
+        component: Component = self._get(component_id)
         if component:
             self.seen.add(component)
         return component
@@ -24,5 +30,5 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get(self: T, reference: ComponentReferenceValue) -> Component:
+    def _get(self: T, component_id: ComponentId) -> Component:
         raise NotImplementedError

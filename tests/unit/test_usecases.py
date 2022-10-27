@@ -1,6 +1,11 @@
 from typing import TypeVar
 
-from cyclecomposition.domain.model import Component, ComponentReferenceValue
+from cyclecomposition.domain.commands import CreateComponent
+from cyclecomposition.domain.model import (
+    ComponentId,
+    Component,
+    ComponentReferenceValue,
+)
 from cyclecomposition.adapters import repository
 from cyclecomposition.service_layer import services, unit_of_work
 
@@ -18,8 +23,8 @@ class FakeRepository(repository.AbstractRepository):
         super().add(component)
         self._components.add(component)
 
-    def _get(self, reference: ComponentReferenceValue) -> Component:
-        return next(b for b in self._components if b.reference == reference)
+    def _get(self, component_id: ComponentId) -> Component:
+        return next(b for b in self._components if b.id == component_id)
 
     def list(self) -> list[Component]:
         """getlist of all cycles"""
@@ -48,6 +53,8 @@ def test_create_new_cycle() -> None:
     """test create a new cycle"""
     uow = FakeUnitOfWork()
     ref = ComponentReferenceValue("my_new_cycle")
-    services.define_component(ref, uow)
-    assert uow.components.get(ref) is not None
+    component_id = uow.components.get_next_id()
+    command = CreateComponent(id=component_id, ref=ref)
+    services.define_component(command, uow)
+    assert uow.components.get(component_id) is not None
     assert uow.committed
