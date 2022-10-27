@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -17,9 +18,18 @@ class ComponentId:
 
 
 class Component:
-    def __init__(self, component_id: ComponentId, ref: ComponentReference):
+    def __init__(
+        self,
+        component_id: ComponentId,
+        ref: ComponentReference,
+        parent_id: ComponentId = None,
+    ) -> None:
         self.component_id: ComponentId = component_id
         self.reference: ComponentReference = ref
+        self.parent_id: Optional[ComponentId] = parent_id
+
+    def set_parent(self, parent_id: ComponentId) -> None:
+        self.parent_id = parent_id
 
     def __repr__(self) -> str:
         return f"<Cycle {self.component_id.identifier} - {self.reference.reference}>"

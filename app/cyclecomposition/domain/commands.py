@@ -12,3 +12,9 @@ class Command:
 class CreateComponent(Command):
     component_id: ComponentId
     ref: ComponentReference
+
+
+@dataclass(frozen=True)
+class Assembly(Command):
+    component_id: ComponentId
+    mout_on_id: ComponentId

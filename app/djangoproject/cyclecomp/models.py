@@ -1,12 +1,14 @@
 from django.db import models
 
 from cyclecomposition.domain import model as domain_model
+from cyclecomposition.domain.model import ComponentId
 
 
 class Component(models.Model):
     component_id = models.CharField(max_length=16, primary_key=True)
     reference = models.CharField(max_length=255)
     marque = models.CharField(max_length=255)
+    parent = models.CharField(max_length=16, null=True)
 
     @staticmethod
     def update_from_domain(component_domain: domain_model.Component) -> None:
@@ -20,6 +22,8 @@ class Component(models.Model):
                 reference=component_domain.reference.reference,
                 marque=component_domain.reference.marque,
             )
+        if component_domain.parent_id:
+            component.parent = component_domain.parent_id.identifier
         component.save()
 
     # noinspection PyTypeChecker
@@ -28,4 +32,5 @@ class Component(models.Model):
             component_id=domain_model.ComponentId.from_string(self.component_id),
             ref=domain_model.ComponentReference(self.reference, self.marque),
         )
+        component_domain.set_parent(ComponentId.from_string(self.parent))
         return component_domain

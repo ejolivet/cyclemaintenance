@@ -1,6 +1,6 @@
 from typing import TypeVar
 
-from cyclecomposition.domain.commands import CreateComponent
+from cyclecomposition.domain.commands import CreateComponent, Assembly
 from cyclecomposition.domain.model import (
     ComponentId,
     Component,
@@ -50,7 +50,7 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
 
 
 def test_create_new_component() -> None:
-    """test create a new cycle"""
+    """test create a new component"""
     uow = FakeUnitOfWork()
     ref = ComponentReference("my_new_cycle", "marque_cycle")
     component_id = uow.components.get_next_id()
@@ -58,3 +58,20 @@ def test_create_new_component() -> None:
     services.define_component(command, uow)
     assert uow.components.get(component_id) is not None
     assert uow.committed
+
+
+def test_component_mount_on() -> None:
+    uow = FakeUnitOfWork()
+    ref_component_1 = ComponentReference("comp_1", "marque_1")
+    ref_component_2 = ComponentReference("comp_2", "marque_2")
+    id_1 = uow.components.get_next_id()
+    command = CreateComponent(component_id=id_1, ref=ref_component_1)
+    services.define_component(command, uow)
+    id_2 = uow.components.get_next_id()
+    command = CreateComponent(component_id=id_2, ref=ref_component_2)
+    services.define_component(command, uow)
+
+    command_assembly = Assembly(component_id=id_1, mout_on_id=id_2)
+    services.mount_component_on(command_assembly, uow)
+
+    assert uow.components.get(id_1).parent_id == id_2
