@@ -2,8 +2,9 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class ComponentReferenceValue:
-    name: str
+class ComponentReference:
+    reference: str
+    marque: str
 
 
 @dataclass(frozen=True)
@@ -16,12 +17,12 @@ class ComponentId:
 
 
 class Component:
-    def __init__(self, component_id: ComponentId, ref: ComponentReferenceValue):
+    def __init__(self, component_id: ComponentId, ref: ComponentReference):
         self.component_id: ComponentId = component_id
-        self.reference: ComponentReferenceValue = ref
+        self.reference: ComponentReference = ref
 
     def __repr__(self) -> str:
-        return f"<Cycle {self.component_id.identifier} - {self.reference.name}>"
+        return f"<Cycle {self.component_id.identifier} - {self.reference.reference}>"
 
     def __eq__(self, other) -> bool:  # type: ignore
         if not isinstance(other, Component):

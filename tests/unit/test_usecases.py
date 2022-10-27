@@ -4,7 +4,7 @@ from cyclecomposition.domain.commands import CreateComponent
 from cyclecomposition.domain.model import (
     ComponentId,
     Component,
-    ComponentReferenceValue,
+    ComponentReference,
 )
 from cyclecomposition.adapters import repository
 from cyclecomposition.service_layer import services, unit_of_work
@@ -49,10 +49,10 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
         pass
 
 
-def test_create_new_cycle() -> None:
+def test_create_new_component() -> None:
     """test create a new cycle"""
     uow = FakeUnitOfWork()
-    ref = ComponentReferenceValue("my_new_cycle")
+    ref = ComponentReference("my_new_cycle", "marque_cycle")
     component_id = uow.components.get_next_id()
     command = CreateComponent(component_id=component_id, ref=ref)
     services.define_component(command, uow)

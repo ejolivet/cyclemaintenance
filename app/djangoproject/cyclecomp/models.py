@@ -6,6 +6,7 @@ from cyclecomposition.domain import model as domain_model
 class Component(models.Model):
     component_id = models.CharField(max_length=16, primary_key=True)
     reference = models.CharField(max_length=255)
+    marque = models.CharField(max_length=255)
 
     @staticmethod
     def update_from_domain(component_domain: domain_model.Component) -> None:
@@ -16,7 +17,8 @@ class Component(models.Model):
         except Component.DoesNotExist:
             component = Component(
                 component_id=component_domain.component_id.identifier,
-                reference=component_domain.reference.name,
+                reference=component_domain.reference.reference,
+                marque=component_domain.reference.marque,
             )
         component.save()
 
@@ -24,6 +26,6 @@ class Component(models.Model):
     def to_domain(self) -> domain_model.Component:
         component_domain = domain_model.Component(
             component_id=domain_model.ComponentId.from_string(self.component_id),
-            ref=domain_model.ComponentReferenceValue(self.reference),
+            ref=domain_model.ComponentReference(self.reference, self.marque),
         )
         return component_domain

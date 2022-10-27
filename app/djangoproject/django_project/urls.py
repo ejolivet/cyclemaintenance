@@ -18,5 +18,5 @@ from djangoproject.cyclecomp import views
 from django.urls import path
 
 urlpatterns = [
-    path("add_cycle", views.add_cycle),
+    path("define_component", views.define_component),
 ]
