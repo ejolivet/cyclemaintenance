@@ -1,7 +1,7 @@
 from djangoproject.cyclecomp import models as django_models
 
 from ..adapters.repository import AbstractRepository
-from ..domain.model import Component, ComponentReferenceValue, ComponentId
+from ..domain.model import Component, ComponentId
 
 
 class DjangoRepository(AbstractRepository):
@@ -14,7 +14,7 @@ class DjangoRepository(AbstractRepository):
 
     def _get(self, component_id: ComponentId) -> Component:
         return (
-            django_models.Component.objects.filter(component_id=component_id.id)
+            django_models.Component.objects.filter(component_id=component_id.identifier)
             .first()
             .to_domain()
         )

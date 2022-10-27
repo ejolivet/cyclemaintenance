@@ -24,7 +24,7 @@ class FakeRepository(repository.AbstractRepository):
         self._components.add(component)
 
     def _get(self, component_id: ComponentId) -> Component:
-        return next(b for b in self._components if b.id == component_id)
+        return next(b for b in self._components if b.component_id == component_id)
 
     def list(self) -> list[Component]:
         """getlist of all cycles"""
@@ -54,7 +54,7 @@ def test_create_new_cycle() -> None:
     uow = FakeUnitOfWork()
     ref = ComponentReferenceValue("my_new_cycle")
     component_id = uow.components.get_next_id()
-    command = CreateComponent(id=component_id, ref=ref)
+    command = CreateComponent(component_id=component_id, ref=ref)
     services.define_component(command, uow)
     assert uow.components.get(component_id) is not None
     assert uow.committed

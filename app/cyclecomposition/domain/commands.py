@@ -3,11 +3,12 @@ from dataclasses import dataclass
 from .model import ComponentId, ComponentReferenceValue
 
 
+@dataclass(frozen=True)
 class Command:
     pass
 
 
-@dataclass
+@dataclass(frozen=True)
 class CreateComponent(Command):
-    id: ComponentId
+    component_id: ComponentId
     ref: ComponentReferenceValue

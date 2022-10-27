@@ -1,7 +1,4 @@
 from dataclasses import dataclass
-from typing import TypeVar
-
-T = TypeVar("T", bound="ComponentId")
 
 
 @dataclass(frozen=True)
@@ -11,25 +8,25 @@ class ComponentReferenceValue:
 
 @dataclass(frozen=True)
 class ComponentId:
-    id: str
+    identifier: str
 
     @classmethod
-    def from_string(cls, string_id: str) -> T:
+    def from_string(cls, string_id: str) -> "ComponentId":
         return ComponentId(string_id)
 
 
 class Component:
     def __init__(self, component_id: ComponentId, ref: ComponentReferenceValue):
-        self.id: ComponentId = component_id
+        self.component_id: ComponentId = component_id
         self.reference: ComponentReferenceValue = ref
 
     def __repr__(self) -> str:
-        return f"<Cycle {self.reference}>"
+        return f"<Cycle {self.component_id.identifier} - {self.reference.name}>"
 
     def __eq__(self, other) -> bool:  # type: ignore
         if not isinstance(other, Component):
             return False
-        return other.reference == self.reference
+        return other.component_id == self.component_id
 
     def __hash__(self) -> int:
-        return hash(self.reference)
+        return hash(self.component_id)

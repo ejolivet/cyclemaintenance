@@ -1,8 +1,8 @@
 import abc
+import uuid
 from typing import Set, TypeVar
 
-from ..domain.model import ComponentId, Component, ComponentReferenceValue
-import uuid
+from ..domain.model import Component, ComponentId
 
 T = TypeVar("T", bound="AbstractRepository")
 

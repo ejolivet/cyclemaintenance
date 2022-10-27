@@ -6,6 +6,7 @@ import django
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from cyclecomposition.domain.commands import CreateComponent
 from cyclecomposition.domain.model import ComponentReferenceValue
 from cyclecomposition.service_layer import services, unit_of_work_django
 
@@ -16,8 +17,12 @@ django.setup()
 @csrf_exempt
 def add_cycle(request: Any) -> HttpResponse:
     data = json.loads(request.body)
+    uow = unit_of_work_django.DjangoUnitOfWork()
+    command = CreateComponent(
+        uow.components.get_next_id(), ComponentReferenceValue(data["ref"])
+    )
     services.define_component(
-        ComponentReferenceValue(data["ref"]),
-        unit_of_work_django.DjangoUnitOfWork(),
+        command=command,
+        uow=unit_of_work_django.DjangoUnitOfWork(),
     )
     return HttpResponse("OK", status=201)
