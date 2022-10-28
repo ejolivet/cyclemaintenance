@@ -16,6 +16,8 @@ class Component(models.Model):
             component = Component.objects.get(
                 component_id=component_domain.component_id.identifier
             )
+            component.reference = component_domain.reference.reference
+            component.marque = component_domain.reference.marque
         except Component.DoesNotExist:
             component = Component(
                 component_id=component_domain.component_id.identifier,
@@ -29,8 +31,8 @@ class Component(models.Model):
     # noinspection PyTypeChecker
     def to_domain(self) -> domain_model.Component:
         component_domain = domain_model.Component(
-            component_id=domain_model.ComponentId.from_string(self.component_id),
+            component_id=domain_model.ComponentId(self.component_id),
             ref=domain_model.ComponentReference(self.reference, self.marque),
         )
-        component_domain.set_parent(ComponentId.from_string(self.parent))
+        component_domain.set_parent(ComponentId.from_uuid(self.parent))
         return component_domain

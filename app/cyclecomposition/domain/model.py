@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
+from uuid import UUID
 
 
 @dataclass(frozen=True)
@@ -13,8 +14,8 @@ class ComponentId:
     identifier: str
 
     @classmethod
-    def from_string(cls, string_id: str) -> "ComponentId":
-        return ComponentId(string_id)
+    def from_uuid(cls, uuid: UUID) -> "ComponentId":
+        return ComponentId(str(uuid))
 
 
 class Component:
