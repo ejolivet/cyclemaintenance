@@ -2,10 +2,12 @@ import json
 import os
 from typing import Any
 
+from django.urls import reverse
+
 from djangoproject.cyclecomp.models import Component
 
 import django
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 
@@ -19,17 +21,19 @@ django.setup()
 
 @csrf_exempt
 def define_component(request: Any) -> HttpResponse:
-    data = json.loads(request.body)
+    # data = json.loads(request.body)
     uow = unit_of_work_django.DjangoUnitOfWork()
     command = CreateComponent(
         uow.components.get_next_id(),
-        ComponentReference(reference=data["ref"], marque=data["marque"]),
+        ComponentReference(
+            reference=request.POST["reference"], marque=request.POST["marque"]
+        ),
     )
     services.define_component(
         command=command,
         uow=uow,
     )
-    return HttpResponse("OK", status=201)
+    return HttpResponseRedirect("/cyclecomp/")
 
 
 def detail(request: Any, component_id: str) -> HttpResponse:
@@ -42,3 +46,7 @@ def index(request: Any) -> HttpResponse:
     component_list = uow.components.list()
     context = {"component_list": component_list}
     return render(request, "cyclecomp/index.html", context)
+
+
+def new_component(request: Any) -> HttpResponse:
+    return render(request, "cyclecomp/new_component.html")

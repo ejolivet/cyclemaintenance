@@ -1,0 +1,12 @@
+<form action="{% url 'cyclecomp:define_component' %}" method="POST">
+  {% csrf_token %}
+  <label>Reference:</label>
+    <input name="reference">
+  <label>Marque:</label>
+    <input name="marque">
+
+    <button type="submit">
+        create
+    </button>
+</form>
+
