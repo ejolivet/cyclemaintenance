@@ -1,0 +1,11 @@
+{% if component_list %}
+    <ul>
+    {% for component in component_list %}
+        <li><a href="{% url 'cyclecomp:detail' component.component_id.identifier %}">{{ component.reference.reference }} -- {{ component.reference.marque }}</a></li>
+        <p> Components are available. {{ component.component_id.identifier }} </p>
+    {% endfor %}
+    </ul>
+
+{% else %}
+    <p>No component are available.</p>
+{% endif %}

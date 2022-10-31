@@ -22,11 +22,11 @@ class Component:
     def __init__(
         self,
         component_id: ComponentId,
-        ref: ComponentReference,
+        reference: ComponentReference,
         parent_id: ComponentId = None,
     ) -> None:
         self.component_id: ComponentId = component_id
-        self.reference: ComponentReference = ref
+        self.reference: ComponentReference = reference
         self.parent_id: Optional[ComponentId] = parent_id
 
     def set_parent(self, parent_id: ComponentId) -> None:

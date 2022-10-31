@@ -32,7 +32,7 @@ class Component(models.Model):
     def to_domain(self) -> domain_model.Component:
         component_domain = domain_model.Component(
             component_id=domain_model.ComponentId(self.component_id),
-            ref=domain_model.ComponentReference(self.reference, self.marque),
+            reference=domain_model.ComponentReference(self.reference, self.marque),
         )
         component_domain.set_parent(ComponentId.from_uuid(self.parent))
         return component_domain

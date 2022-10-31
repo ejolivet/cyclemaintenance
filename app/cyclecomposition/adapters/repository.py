@@ -32,3 +32,7 @@ class AbstractRepository(abc.ABC):
     @abc.abstractmethod
     def _get(self: T, component_id: ComponentId) -> Component:
         raise NotImplementedError
+
+    @abc.abstractmethod
+    def list(self) -> list[Component]:
+        raise NotImplementedError

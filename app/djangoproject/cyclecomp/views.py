@@ -2,8 +2,11 @@ import json
 import os
 from typing import Any
 
+from djangoproject.cyclecomp.models import Component
+
 import django
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 
 from cyclecomposition.domain.commands import CreateComponent
@@ -27,3 +30,15 @@ def define_component(request: Any) -> HttpResponse:
         uow=uow,
     )
     return HttpResponse("OK", status=201)
+
+
+def detail(request: Any, component_id: str) -> HttpResponse:
+    component = get_object_or_404(Component, pk=component_id)
+    return render(request, "cyclecomp/detail.html", {"cyclecomp": component})
+
+
+def index(request: Any) -> HttpResponse:
+    uow = unit_of_work_django.DjangoUnitOfWork()
+    component_list = uow.components.list()
+    context = {"component_list": component_list}
+    return render(request, "cyclecomp/index.html", context)
