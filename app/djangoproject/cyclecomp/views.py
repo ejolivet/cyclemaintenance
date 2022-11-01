@@ -1,8 +1,5 @@
-import json
 import os
 from typing import Any
-
-from django.urls import reverse
 
 from djangoproject.cyclecomp.models import Component
 
@@ -19,9 +16,7 @@ os.environ["DJANGO_SETTINGS_MODULE"] = "djangoproject.django_project.settings"
 django.setup()
 
 
-@csrf_exempt
 def define_component(request: Any) -> HttpResponse:
-    # data = json.loads(request.body)
     uow = unit_of_work_django.DjangoUnitOfWork()
     command = CreateComponent(
         uow.components.get_next_id(),
@@ -34,6 +29,22 @@ def define_component(request: Any) -> HttpResponse:
         uow=uow,
     )
     return HttpResponseRedirect("/cyclecomp/")
+
+
+@csrf_exempt
+def define_component_api(request: Any) -> HttpResponse:
+    uow = unit_of_work_django.DjangoUnitOfWork()
+    command = CreateComponent(
+        uow.components.get_next_id(),
+        ComponentReference(
+            reference=request.POST["reference"], marque=request.POST["marque"]
+        ),
+    )
+    services.define_component(
+        command=command,
+        uow=uow,
+    )
+    return HttpResponse("OK", status=201)
 
 
 def detail(request: Any, component_id: str) -> HttpResponse:

@@ -23,6 +23,8 @@ def test_post_to_add_component() -> None:
     ref: str = random_reference("mycycle")
     marque: str = random_marque("mymarque")
     respond = requests.post(
-        f"{url}/define_component", json={"ref": ref, "marque": marque}, timeout=500
+        f"{url}/cyclecomp/define_component_api",
+        data={"reference": ref, "marque": marque},
+        timeout=500,
     )
     assert respond.status_code == 201
