@@ -9,7 +9,7 @@ def define_component(
 ) -> None:
     with uow:
         uow.components.add(
-            Component(component_id=command.component_id, ref=command.ref)
+            Component(component_id=command.component_id, reference=command.ref)
         )
         uow.commit()
 

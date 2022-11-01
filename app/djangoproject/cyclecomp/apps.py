@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class CycleCompoConfig(AppConfig):
+class CycleComponent(AppConfig):
     name = "djangoproject.cyclecomp"
