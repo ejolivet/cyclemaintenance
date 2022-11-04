@@ -1,7 +1,7 @@
 from djangoproject.cyclecomp import models as django_models
 
 from ..adapters.repository import AbstractRepository
-from ..domain.model import Component, ComponentId
+from ..domain.model import Component, ComponentDTO, ComponentId
 
 
 class DjangoRepository(AbstractRepository):
@@ -19,5 +19,5 @@ class DjangoRepository(AbstractRepository):
             .to_domain()
         )
 
-    def list(self) -> list[Component]:
-        return [b.to_domain() for b in django_models.Component.objects.all()]
+    def list(self) -> list[ComponentDTO]:
+        return [b.to_domain().to_dto() for b in django_models.Component.objects.all()]

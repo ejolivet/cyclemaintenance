@@ -2,7 +2,7 @@ import abc
 import uuid
 from typing import Set, TypeVar
 
-from ..domain.model import Component, ComponentId
+from ..domain.model import Component, ComponentDTO, ComponentId
 
 T = TypeVar("T", bound="AbstractRepository")
 
@@ -34,5 +34,5 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def list(self) -> list[Component]:
+    def list(self) -> list[ComponentDTO]:
         raise NotImplementedError
