@@ -11,7 +11,11 @@ def define_component(
 ) -> None:
     with uow:
         uow.components.add(
-            Component(component_id=command.component_id, reference=command.ref)
+            ComponentDTO(
+                uid=command.component_id.identifier,
+                reference=command.ref.reference,
+                marque=command.ref.marque,
+            )
         )
         uow.commit()
 
@@ -27,6 +31,7 @@ def mount_component_on(
     uow: unit_of_work.AbstractUnitOfWork,
 ) -> None:
     with uow:
-        child = uow.components.get(command.component_id)
+        child: Component = Component(uow.components.get(command.component_id))
         child.set_parent(command.mout_on_id)
+        uow.components.update(child.to_dto())
         uow.commit()

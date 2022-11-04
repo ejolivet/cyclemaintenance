@@ -3,7 +3,6 @@ from typing import TypeVar, List
 from cyclecomposition.domain.commands import CreateComponent, Assembly
 from cyclecomposition.domain.model import (
     ComponentId,
-    Component,
     ComponentDTO,
     ComponentReference,
 )
@@ -16,23 +15,23 @@ T = TypeVar("T", bound=repository.AbstractRepository)
 class FakeRepository(repository.AbstractRepository):
     """FakeRepository for test"""
 
-    def __init__(self, components: list[Component]) -> None:
+    def __init__(self, components: list[ComponentDTO]) -> None:
         super().__init__()
-        self._components = set(components)
+        self._components = {component.uid: component for component in components}
 
-    def add(self, component: Component) -> None:
+    def add(self, component: ComponentDTO) -> None:
         super().add(component)
-        self._components.add(component)
+        self._components[component.uid] = component
 
-    def _get(self, component_id: ComponentId) -> Component:
-        return next(b for b in self._components if b.component_id == component_id)
+    def _get(self, component_id: ComponentId) -> ComponentDTO:
+        return self._components[component_id.identifier]
 
     def list(self) -> list[ComponentDTO]:
         """getlist of all cycles"""
-        return [comp.to_dto() for comp in self._components]
+        return list(self._components.values())
 
-    def update(self: T, component: Component) -> None:
-        raise NotImplementedError
+    def update(self, component: ComponentDTO) -> None:
+        self._components[component.uid] = component
 
 
 class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
@@ -97,5 +96,4 @@ def test_component_mount_on() -> None:
 
     command_assembly = Assembly(component_id=id_1, mout_on_id=id_2)
     services.mount_component_on(command_assembly, uow)
-
-    assert uow.components.get(id_1).parent_id == id_2
+    assert uow.components.get(id_1).mounted_on == id_2.identifier
