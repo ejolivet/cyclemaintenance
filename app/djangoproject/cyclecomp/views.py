@@ -1,5 +1,5 @@
 import os
-from typing import Any
+from typing import Any, List
 
 from djangoproject.cyclecomp.models import Component
 
@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 
 from cyclecomposition.domain.commands import CreateComponent
-from cyclecomposition.domain.model import ComponentReference
+from cyclecomposition.domain.model import ComponentDTO, ComponentReference
 from cyclecomposition.service_layer import services, unit_of_work_django
 
 os.environ["DJANGO_SETTINGS_MODULE"] = "djangoproject.django_project.settings"
@@ -54,7 +54,7 @@ def detail(request: Any, component_id: str) -> HttpResponse:
 
 def index(request: Any) -> HttpResponse:
     uow = unit_of_work_django.DjangoUnitOfWork()
-    component_list = uow.components.list()
+    component_list: List[ComponentDTO] = services.get_component_list(uow)
     context = {"component_list": component_list}
     return render(request, "cyclecomp/index.html", context)
 

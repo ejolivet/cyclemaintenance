@@ -1,5 +1,7 @@
+from typing import List
+
 from ..domain.commands import Assembly, CreateComponent
-from ..domain.model import Component
+from ..domain.model import Component, ComponentDTO
 from ..service_layer import unit_of_work
 
 
@@ -12,6 +14,12 @@ def define_component(
             Component(component_id=command.component_id, reference=command.ref)
         )
         uow.commit()
+
+
+def get_component_list(
+    uow: unit_of_work.AbstractUnitOfWork,
+) -> List[ComponentDTO]:
+    return uow.components.list()
 
 
 def mount_component_on(
