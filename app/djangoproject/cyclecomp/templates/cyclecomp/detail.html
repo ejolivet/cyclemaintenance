@@ -1,7 +1,7 @@
-<h1>{{ cyclecomp.component_id }}</h1>
+<h1>{{ cyclecomp.uid }}</h1>
 
 <ul>
-    <li>{{ cyclecomp.reference }} -- {{ cyclecomp.marque }}-- {{ cyclecomp.parent }}</li>
+    <li>{{ cyclecomp.reference }} -- {{ cyclecomp.marque }}-- {{ cyclecomp.mounted_on }}</li>
 </ul>
 
 <a href="{% url 'cyclecomp:index' %}">go to index</a>
