@@ -1,38 +1,35 @@
 from django.db import models
 
-from cyclecomposition.domain import model as domain_model
-from cyclecomposition.domain.model import ComponentId
+from cyclecomposition.domain.model import ComponentDTO
 
 
 class Component(models.Model):
     component_id = models.CharField(max_length=16, primary_key=True)
     reference = models.CharField(max_length=255)
     marque = models.CharField(max_length=255)
-    parent = models.CharField(max_length=16, null=True)
+    parent = models.CharField(max_length=16, default="none")
 
     @staticmethod
-    def update_from_domain(component_domain: domain_model.Component) -> None:
+    def update_from_dto(component_dto: ComponentDTO) -> None:
         try:
-            component = Component.objects.get(
-                component_id=component_domain.component_id.identifier
-            )
-            component.reference = component_domain.reference.reference
-            component.marque = component_domain.reference.marque
+            component = Component.objects.get(component_id=component_dto.uid)
+            component.reference = component_dto.reference
+            component.marque = component_dto.marque
         except Component.DoesNotExist:
             component = Component(
-                component_id=component_domain.component_id.identifier,
-                reference=component_domain.reference.reference,
-                marque=component_domain.reference.marque,
+                component_id=component_dto.uid,
+                reference=component_dto.reference,
+                marque=component_dto.marque,
             )
-        if component_domain.parent_id:
-            component.parent = component_domain.parent_id.identifier
+        component.parent = component_dto.mounted_on
         component.save()
 
     # noinspection PyTypeChecker
-    def to_domain(self) -> domain_model.Component:
-        component_domain = domain_model.Component(
-            component_id=domain_model.ComponentId(self.component_id),
-            reference=domain_model.ComponentReference(self.reference, self.marque),
+    def to_dto(self) -> ComponentDTO:
+        component_dto = ComponentDTO(
+            uid=self.component_id,
+            reference=self.reference,
+            marque=self.marque,
+            mounted_on=self.parent,
         )
-        component_domain.set_parent(ComponentId.from_uuid(self.parent))
-        return component_domain
+        return component_dto

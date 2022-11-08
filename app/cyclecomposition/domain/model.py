@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import Optional
 from uuid import UUID
 
 
@@ -25,7 +24,7 @@ class ComponentDTO:
     uid: str
     reference: str
     marque: str
-    mounted_on: Optional[str] = None
+    mounted_on: str = "none"
 
     def __post_init__(self) -> None:
         # sort by uid
@@ -35,19 +34,21 @@ class ComponentDTO:
 class Component:
     def __init__(
         self,
-        component_id: ComponentId,
-        reference: ComponentReference,
-        parent_id: Optional[ComponentId] = None,
+        component_dto: ComponentDTO,
     ) -> None:
-        self.component_id: ComponentId = component_id
-        self.reference: ComponentReference = reference
-        self.parent_id: Optional[ComponentId] = parent_id
+        self.component_id: ComponentId = ComponentId(component_dto.uid)
+        self.reference: ComponentReference = ComponentReference(
+            component_dto.reference, component_dto.marque
+        )
+        if component_dto.mounted_on:
+            self.parent_id: ComponentId = ComponentId(component_dto.mounted_on)
 
     def to_dto(self) -> ComponentDTO:
         return ComponentDTO(
             uid=self.component_id.identifier,
             reference=self.reference.reference,
             marque=self.reference.marque,
+            mounted_on=self.parent_id.identifier,
         )
 
     def set_parent(self, parent_id: ComponentId) -> None:
