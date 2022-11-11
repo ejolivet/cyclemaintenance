@@ -1,23 +1,23 @@
 from djangoproject.cyclecomp import models as django_models
 
 from ..adapters.repository import AbstractRepository
-from ..domain.model import ComponentDTO, ComponentId
+from ..domain.model import Component, ComponentId
 
 
 class DjangoRepository(AbstractRepository):
-    def add(self, component: ComponentDTO) -> None:
+    def add(self, component: Component) -> None:
         super().add(component)
         self.update(component)
 
-    def update(self, component: ComponentDTO) -> None:
-        django_models.Component.update_from_dto(component)
+    def update(self, component: Component) -> None:
+        django_models.Component.update_from_domain(component)
 
-    def _get(self, component_id: ComponentId) -> ComponentDTO:
+    def _get(self, component_id: ComponentId) -> Component:
         return (
             django_models.Component.objects.filter(component_id=component_id.identifier)
             .first()
-            .to_dto()
+            .to_domain()
         )
 
-    def list(self) -> list[ComponentDTO]:
-        return [b.to_dto() for b in django_models.Component.objects.all()]
+    def list(self) -> list[Component]:
+        return [b.to_domain() for b in django_models.Component.objects.all()]

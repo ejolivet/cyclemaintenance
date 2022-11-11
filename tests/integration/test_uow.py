@@ -27,7 +27,9 @@ def test_uow_can_retrieve_a_component() -> None:
 
     component = uow.components.get(component_id=component_id)
 
-    assert component == ComponentDTO(component_id.identifier, ref.reference, ref.marque)
+    assert component == Component(
+        ComponentDTO(component_id.identifier, ref.reference, ref.marque)
+    )
 
 
 @pytest.mark.django_db(transaction=True)
@@ -42,8 +44,8 @@ def test_uow_can_retrieve_an_assembly() -> None:
     insert_cycle(id_1, ref_1)
     insert_cycle(id_2, ref_2)
 
-    comp_1 = Component(uow.components.get(component_id=id_1))
+    comp_1 = uow.components.get(component_id=id_1)
     comp_1.set_parent(id_2)
-    uow.components.update(comp_1.to_dto())
+    uow.components.update(comp_1)
 
-    assert uow.components.get(component_id=id_1).mounted_on == id_2.identifier
+    assert uow.components.get(component_id=id_1).parent_id == id_2

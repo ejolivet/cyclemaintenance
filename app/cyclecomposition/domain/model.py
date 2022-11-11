@@ -40,8 +40,7 @@ class Component:
         self.reference: ComponentReference = ComponentReference(
             component_dto.reference, component_dto.marque
         )
-        if component_dto.mounted_on:
-            self.parent_id: ComponentId = ComponentId(component_dto.mounted_on)
+        self.parent_id: ComponentId = ComponentId(component_dto.mounted_on)
 
     def to_dto(self) -> ComponentDTO:
         return ComponentDTO(

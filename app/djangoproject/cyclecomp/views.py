@@ -47,7 +47,7 @@ def define_component_api(request: Any) -> HttpResponse:
 
 def detail(request: Any, component_id: str) -> HttpResponse:
     uow = unit_of_work_django.DjangoUnitOfWork()
-    component_dto: ComponentDTO = uow.components.get(ComponentId(component_id))
+    component_dto: ComponentDTO = uow.components.get(ComponentId(component_id)).to_dto()
     return render(request, "cyclecomp/detail.html", {"cyclecomp": component_dto})
 
 

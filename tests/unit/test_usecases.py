@@ -5,6 +5,7 @@ from cyclecomposition.domain.model import (
     ComponentId,
     ComponentDTO,
     ComponentReference,
+    Component,
 )
 from cyclecomposition.adapters import repository
 from cyclecomposition.service_layer import services, unit_of_work
@@ -15,23 +16,25 @@ T = TypeVar("T", bound=repository.AbstractRepository)
 class FakeRepository(repository.AbstractRepository):
     """FakeRepository for test"""
 
-    def __init__(self, components: list[ComponentDTO]) -> None:
+    def __init__(self, components: list[Component]) -> None:
         super().__init__()
-        self._components = {component.uid: component for component in components}
+        self._components = {
+            component.component_id: component for component in components
+        }
 
-    def add(self, component: ComponentDTO) -> None:
+    def add(self, component: Component) -> None:
         super().add(component)
-        self._components[component.uid] = component
+        self._components[component.component_id] = component
 
-    def _get(self, component_id: ComponentId) -> ComponentDTO:
-        return self._components[component_id.identifier]
+    def _get(self, component_id: ComponentId) -> Component:
+        return self._components[component_id]
 
-    def list(self) -> list[ComponentDTO]:
+    def list(self) -> list[Component]:
         """getlist of all cycles"""
         return list(self._components.values())
 
-    def update(self, component: ComponentDTO) -> None:
-        self._components[component.uid] = component
+    def update(self, component: Component) -> None:
+        self._components[component.component_id] = component
 
 
 class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
@@ -43,6 +46,8 @@ class FakeUnitOfWork(unit_of_work.AbstractUnitOfWork):
         self.committed = False
 
     def commit(self) -> None:
+        for component in self.components.seen:
+            self.components.update(component)
         self.committed = True
 
     def rollback(self) -> None:
@@ -70,17 +75,18 @@ def test_get_list_of_components_without_parent() -> None:
     id_2 = uow.components.get_next_id()
     command = CreateComponent(component_id=id_2, ref=ref_component_2)
     services.define_component(command, uow)
-    expected_component_1: ComponentDTO = ComponentDTO(
+    expected_component_dto_1: ComponentDTO = ComponentDTO(
         id_1.identifier, ref_component_1.reference, ref_component_1.marque
     )
-    expected_component_2: ComponentDTO = ComponentDTO(
+
+    expected_component_dto_2: ComponentDTO = ComponentDTO(
         id_2.identifier, ref_component_2.reference, ref_component_2.marque
     )
 
-    components: List[ComponentDTO] = services.get_component_list(uow=uow)
+    components_dto: List[ComponentDTO] = services.get_component_list(uow=uow)
 
     assert len(uow.components.list()) == 2
-    assert set(components) == set([expected_component_1, expected_component_2])
+    assert set(components_dto) == {expected_component_dto_1, expected_component_dto_2}
 
 
 def test_component_mount_on() -> None:
@@ -96,4 +102,4 @@ def test_component_mount_on() -> None:
 
     command_assembly = Assembly(component_id=id_1, mout_on_id=id_2)
     services.mount_component_on(command_assembly, uow)
-    assert uow.components.get(id_1).mounted_on == id_2.identifier
+    assert uow.components.get(id_1).parent_id == id_2
